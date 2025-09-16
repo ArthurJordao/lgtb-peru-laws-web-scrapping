@@ -6,6 +6,9 @@ coverage of LGBT rights legislation in Peru.
 """
 
 LGBT_SEARCH_TERMS = [
+    "gay",
+    "identidad de género",
+    "mismo sexo",
     "no binarie",
     "no binario",
     "no binaria",
@@ -18,7 +21,6 @@ LGBT_SEARCH_TERMS = [
     "parejas del mismo sexo",
     "matrimonio igualitario",
     "matrimonio entre personas del mismo sexo",
-    "gay",
     "gays",
     "comunidad gay",
     "LGBT",
@@ -37,7 +39,6 @@ LGBT_SEARCH_TERMS = [
     "homofóbica",
     "homosexual",
     "homosexualidad",
-    "identidad de género",
     "reconocimiento de identidad de género",
     "ley de identidad de género",
     "intersex",
@@ -47,7 +48,6 @@ LGBT_SEARCH_TERMS = [
     "lesbianas",
     "lesbianidad",
     "lésbico",
-    "mismo sexo",
     "del mismo sexo",
     "nombre social",
     "uso de nombre social",

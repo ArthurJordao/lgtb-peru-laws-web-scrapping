@@ -1,13 +1,13 @@
-import requests
 import json
 import time
 from datetime import datetime
 from ..base import BaseLGBTScraper
+import pandas as pd
 
 
-class PeruLGBTAPIScraper(BaseLGBTScraper):
+class Peru2021LGBTScraper(BaseLGBTScraper):
     def __init__(self):
-        super().__init__("api_current")
+        super().__init__("2021")
 
         # API endpoints discovered
         self.search_api = "https://wb2server.congreso.gob.pe/spley-portal-service/proyecto-ley/lista-con-filtro"
@@ -144,7 +144,7 @@ class PeruLGBTAPIScraper(BaseLGBTScraper):
                 time.sleep(1)  # Be respectful between searches
 
                 if len(self.results) >= 50:  # Reasonable limit
-                    print(f"Reached limit of 50 results, stopping search...")
+                    print("Reached limit of 50 results, stopping search...")
                     break
 
             except KeyboardInterrupt:
@@ -157,76 +157,43 @@ class PeruLGBTAPIScraper(BaseLGBTScraper):
         return total_found
 
     def save_results(self):
-        """Save results in multiple formats"""
+        """Save results using the base exporter with API-specific formatting"""
         if not self.results:
             print("No LGBT-related laws found.")
             return
 
-        # Save detailed JSON
-        with open("lgbt_laws_api_results.json", "w", encoding="utf-8") as f:
-            json.dump(self.results, f, indent=2, ensure_ascii=False)
-
-        # Create a simplified version for easier reading
-        simplified_results = []
+        # Transform API results to standard format
+        standardized_results = []
         for result in self.results:
             basic = result["basic_info"]
             detailed = result["detailed_info"]
 
-            simplified = {
-                "proyecto_ley": basic.get("proyectoLey", "N/A"),
-                "titulo": basic.get("titulo", "Sin título"),
-                "estado": basic.get("desEstado", "Sin estado"),
-                "fecha_presentacion": basic.get("fecPresentacion", "Sin fecha"),
-                "proponente": basic.get("desProponente", "Sin proponente"),
-                "autores": basic.get("autores", "Sin autores"),
-                "search_term": result["search_term_used"],
-                "sumilla": detailed.get("general", {}).get("sumilla", "Sin sumilla")
+            standard = {
+                "search_term_used": result["search_term_used"],
+                "found_terms": [],  # API doesn't track individual found terms
+                "url": f"https://wb2server.congreso.gob.pe/spley-portal/#/expediente/main/{basic.get('perParId')}/{basic.get('pleyNum')}",
+                "title": basic.get("titulo", "Sin título"),
+                "law_number": basic.get("proyectoLey", "N/A"),
+                "date": basic.get("fecPresentacion", "Sin fecha"),
+                "status": basic.get("desEstado", "Sin estado"),
+                "summary": detailed.get("general", {}).get("sumilla", "Sin sumilla")
                 if detailed
                 else "Sin detalles",
-                "comisiones": [
+                "authors": basic.get("autores", "Sin autores"),
+                "proponent": basic.get("desProponente", "Sin proponente"),
+                "committees": [
                     c.get("nombre", "Sin nombre")
                     for c in detailed.get("comisiones", [])
                 ]
                 if detailed
                 else [],
-                "url_detalle": f"https://wb2server.congreso.gob.pe/spley-portal/#/expediente/main/{basic.get('perParId')}/{basic.get('pleyNum')}",
+                "year": "2021",
+                "scraped_at": datetime.now().isoformat(),
             }
-            simplified_results.append(simplified)
+            standardized_results.append(standard)
 
-        # Save simplified JSON
-        with open("lgbt_laws_simplified.json", "w", encoding="utf-8") as f:
-            json.dump(simplified_results, f, indent=2, ensure_ascii=False)
-
-        # Save as CSV
-        df = pd.DataFrame(simplified_results)
-        df.to_csv("lgbt_laws_peru.csv", index=False, encoding="utf-8")
-
-        # Create human-readable summary
-        with open("lgbt_laws_summary.txt", "w", encoding="utf-8") as f:
-            f.write("LEYES SOBRE DERECHOS LGBT EN PERÚ - RESUMEN\n")
-            f.write("=" * 50 + "\n")
-            f.write(
-                f"Búsqueda realizada: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-            )
-            f.write(f"Total de proyectos encontrados: {len(simplified_results)}\n\n")
-
-            for i, law in enumerate(simplified_results, 1):
-                f.write(f"{i}. {law['proyecto_ley']}\n")
-                f.write(f"   Título: {law['titulo']}\n")
-                f.write(f"   Estado: {law['estado']}\n")
-                f.write(f"   Fecha: {law['fecha_presentacion']}\n")
-                f.write(f"   Término de búsqueda: {law['search_term']}\n")
-                f.write(
-                    f"   Comisiones: {', '.join(law['comisiones']) if law['comisiones'] else 'Ninguna'}\n"
-                )
-                f.write(f"   Sumilla: {law['sumilla'][:200]}...\n")
-                f.write(f"   URL: {law['url_detalle']}\n\n")
-
-        print(f"Results saved:")
-        print(f"  - lgbt_laws_api_results.json (detailed)")
-        print(f"  - lgbt_laws_simplified.json (simplified)")
-        print(f"  - lgbt_laws_peru.csv (spreadsheet)")
-        print(f"  - lgbt_laws_summary.txt (human readable)")
+        # Use base class exporter
+        self.exporter.save_results(standardized_results, self.period_name)
 
     def run(self):
         """Main execution method"""
@@ -239,5 +206,5 @@ class PeruLGBTAPIScraper(BaseLGBTScraper):
 
 
 if __name__ == "__main__":
-    api = PeruLGBTAPIScraper()
-    api.run()
+    scraper = Peru2021LGBTScraper()
+    scraper.run()

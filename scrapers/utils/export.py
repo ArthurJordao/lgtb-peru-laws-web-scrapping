@@ -12,7 +12,21 @@ class DataExporter:
     """Utility class for exporting scraped law data in multiple formats"""
 
     def __init__(self, output_dir="data/exports"):
-        self.output_dir = Path(output_dir)
+        # Make path relative to project root, not current working directory
+        if not Path(output_dir).is_absolute():
+            # Find project root by looking for pyproject.toml
+            current = Path(__file__).parent
+            while current.parent != current:
+                if (current / "pyproject.toml").exists():
+                    self.output_dir = current / output_dir
+                    break
+                current = current.parent
+            else:
+                # Fallback if pyproject.toml not found
+                self.output_dir = Path(output_dir)
+        else:
+            self.output_dir = Path(output_dir)
+
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def save_results(self, results, period_name):

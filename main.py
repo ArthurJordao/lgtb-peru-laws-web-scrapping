@@ -10,14 +10,7 @@ This script allows you to run scrapers for different periods:
 """
 
 import argparse
-import sys
-from pathlib import Path
-
-# Add project root to path for imports
-project_root = Path(__file__).parent
-sys.path.insert(0, str(project_root))
-
-from scrapers import PeruLGBTAPIScraper, Peru2016LGBTScraper, Peru2011LGBTScraper
+from scrapers import Peru2021LGBTScraper, Peru2016LGBTScraper, Peru2011LGBTScraper
 
 
 def main():
@@ -27,26 +20,24 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python main.py --current              # Scrape current period (2021+)
-  python main.py --historical 2016     # Scrape 2016-2021 period
-  python main.py --historical 2011     # Scrape 2011-2016 period  
-  python main.py --all                 # Scrape all available periods
+  python main.py --current              # Scrape 2021+ period
+  python main.py --period 2016         # Scrape 2016-2021 period
+  python main.py --period 2011         # Scrape 2011-2016 period  
+  python main.py --all                 # Scrape all periods
         """,
     )
 
     parser.add_argument(
-        "--current", action="store_true", help="Scrape current period (2021+) using API"
+        "--current", action="store_true", help="Scrape 2021+ period using API"
     )
 
     parser.add_argument(
-        "--historical",
+        "--period",
         choices=["2016", "2011", "2006"],
-        help="Scrape specific historical period",
+        help="Scrape specific period",
     )
 
-    parser.add_argument(
-        "--all", action="store_true", help="Scrape all available periods"
-    )
+    parser.add_argument("--all", action="store_true", help="Scrape all periods")
 
     parser.add_argument(
         "--test", action="store_true", help="Run in test mode with limited results"
@@ -54,29 +45,29 @@ Examples:
 
     args = parser.parse_args()
 
-    if not any([args.current, args.historical, args.all]):
+    if not any([args.current, args.period, args.all]):
         parser.print_help()
         return
 
     scrapers_to_run = []
 
     if args.current or args.all:
-        scrapers_to_run.append(("Current Period (2021+)", PeruLGBTAPIScraper))
+        scrapers_to_run.append(("Current Period (2021+)", Peru2021LGBTScraper))
 
-    if args.historical == "2016" or args.all:
+    if args.period == "2016" or args.all:
         scrapers_to_run.append(("Historical 2016-2021", Peru2016LGBTScraper))
 
-    if args.historical == "2011" or args.all:
+    if args.period == "2011" or args.all:
         scrapers_to_run.append(("Historical 2011-2016", Peru2011LGBTScraper))
 
-    if args.historical == "2006":
+    if args.period == "2006":
         print("⚠️  2006-2011 scraper is experimental and may have limited functionality")
         # TODO: Add Peru2006LGBTScraper when ready
         print("2006-2011 scraper not yet available in modular structure")
         return
 
     # Run selected scrapers
-    print(f"🏳️‍🌈 Peru LGBT Laws Scraper")
+    print("🏳️‍🌈 Peru LGBT Laws Scraper")
     print(f"Running {len(scrapers_to_run)} scraper(s)...")
     print()
 

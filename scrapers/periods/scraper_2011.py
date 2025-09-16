@@ -3,112 +3,16 @@ import time
 from datetime import datetime
 from urllib.parse import urljoin, quote
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
-import json
-import pandas as pd
 import re
+from ..base import BaseLGBTScraper
 
 
-class Peru2011LGBTScraper:
+class Peru2011LGBTScraper(BaseLGBTScraper):
     def __init__(self):
-        self.session = requests.Session()
-        self.ua = UserAgent()
-        self.setup_session()
+        super().__init__("2011")
 
         # 2011 search URL
         self.search_base_2011 = "https://www2.congreso.gob.pe/Sicr/TraDocEstProc/CLProLey2011.nsf/debusqueda2"
-
-        # LGBT-related search terms
-        self.search_terms = [
-            "no binarie",
-            "no binario",
-            "no binaria",
-            "no-binario",
-            "no-binaria",
-            "bisex",
-            "bisexual",
-            "bisexualidad",
-            "pareja del mismo sexo",
-            "parejas del mismo sexo",
-            "matrimonio igualitario",
-            "matrimonio entre personas del mismo sexo",
-            "gay",
-            "gays",
-            "comunidad gay",
-            "LGBT",
-            "LGTB",
-            "LGBTI",
-            "LGTBI",
-            "LGBTIQ",
-            "LGBTIQ+",
-            "heteronorma",
-            "heteronormativo",
-            "heteronormatividad",
-            "homoafectivo",
-            "vínculos homoafectivos",
-            "homofobia",
-            "homofóbico",
-            "homofóbica",
-            "homosexual",
-            "homosexualidad",
-            "identidad de género",
-            "reconocimiento de identidad de género",
-            "ley de identidad de género",
-            "intersex",
-            "intersexual",
-            "intersexualidad",
-            "lesbiana",
-            "lesbianas",
-            "lesbianidad",
-            "lésbico",
-            "mismo sexo",
-            "del mismo sexo",
-            "nombre social",
-            "uso de nombre social",
-            "orientación sexual",
-            "diversidad sexual",
-            "no discriminación por orientación sexual",
-            "psicosexual",
-            "psicosexualidad",
-            "queer",
-            "transexual",
-            "transexualidad",
-            "transfobia",
-            "transfóbico",
-            "transfóbica",
-            "transgénero",
-            "transgenero",
-            # "trans",
-            "reasignación de sexo",
-            "adecuación de sexo",
-            "cirugía de reasignación de sexo",
-            "travesti",
-            "travestis",
-            "unión homoafectiva",
-            "unión entre personas del mismo sexo",
-            "unión civil",
-            "unión civil no matrimonial",
-            "crímenes de odio",
-            "delitos de odio",
-            # "igualdad",
-            "no discriminación",
-            "cambio de nombre",
-            "rectificación de nombre",
-            "rectificación de sexo",
-        ]
-
-        self.results = []
-
-    def setup_session(self):
-        headers = {
-            "User-Agent": self.ua.random,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-        }
-        self.session.headers.update(headers)
 
     def search_laws_2011(self, search_term, max_results=50):
         """Search for laws in 2011 using the historical interface"""
@@ -397,45 +301,6 @@ class Peru2011LGBTScraper:
             f"\nSearch completed. Found {len(self.results)} LGBT-related laws from 2011-2016 period"
         )
         return total_found
-
-    def save_results(self):
-        """Save results in multiple formats"""
-        if not self.results:
-            print("No LGBT-related laws found for 2011-2016 period.")
-            return
-
-        # Save detailed JSON
-        with open("lgbt_laws_2011_results.json", "w", encoding="utf-8") as f:
-            json.dump(self.results, f, indent=2, ensure_ascii=False)
-
-        # Save as CSV
-        df = pd.DataFrame(self.results)
-        df.to_csv("lgbt_laws_2011.csv", index=False, encoding="utf-8")
-
-        # Create human-readable summary
-        with open("lgbt_laws_2011_summary.txt", "w", encoding="utf-8") as f:
-            f.write("LEYES SOBRE DERECHOS LGBT EN PERÚ - 2011-2016\n")
-            f.write("=" * 50 + "\n")
-            f.write(
-                f"Búsqueda realizada: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-            )
-            f.write(f"Total de proyectos encontrados: {len(self.results)}\n\n")
-
-            for i, law in enumerate(self.results, 1):
-                f.write(f"{i}. {law['law_number']} - {law['title'][:80]}...\n")
-                f.write(f"   Fecha: {law['date']}\n")
-                f.write(f"   Estado: {law['status']}\n")
-                f.write(f"   Proponente: {law['proponent']}\n")
-                f.write(f"   Período: {law['period']}\n")
-                f.write(f"   Término de búsqueda: {law['search_term_used']}\n")
-                f.write(f"   Términos encontrados: {', '.join(law['found_terms'])}\n")
-                f.write(f"   URL: {law['url']}\n")
-                f.write(f"   Resumen: {law['summary'][:150]}...\n\n")
-
-        print(f"Results saved:")
-        print(f"  - lgbt_laws_2011_results.json (detailed)")
-        print(f"  - lgbt_laws_2011.csv (spreadsheet)")
-        print(f"  - lgbt_laws_2011_summary.txt (human readable)")
 
     def run(self):
         """Main execution method"""

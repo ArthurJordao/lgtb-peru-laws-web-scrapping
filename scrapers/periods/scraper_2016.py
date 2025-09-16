@@ -1,4 +1,3 @@
-import requests
 import time
 from datetime import datetime
 from urllib.parse import urljoin, quote
@@ -9,7 +8,7 @@ from ..base import BaseLGBTScraper
 
 class Peru2016LGBTScraper(BaseLGBTScraper):
     def __init__(self):
-        super().__init__("2016-2021")
+        super().__init__("2016")
 
         # Historical search URLs (2016 as example)
         self.search_base_2016 = "https://www2.congreso.gob.pe/Sicr/TraDocEstProc/CLProLey2016.nsf/debusqueda2"
@@ -79,32 +78,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 break
 
         return processed
-
-    def extract_project_number(self, text, link_element):
-        """Extract project number from link text or surrounding context"""
-        # Look for pattern like "05493/2020-CR" in text
-        project_patterns = [
-            r"(\d{4,5}/\d{4}-CR)",
-            r"(\d{4,5}/\d{4})",
-            r"PL\s*(\d+)",
-            r"PROYECTO\s+(\d+)",
-        ]
-
-        # First try the link text itself
-        for pattern in project_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                return match.group(1) if len(match.groups()) > 0 else match.group(0)
-
-        # If not found in text, look at parent elements
-        if link_element.parent:
-            parent_text = link_element.parent.get_text()
-            for pattern in project_patterns:
-                match = re.search(pattern, parent_text, re.IGNORECASE)
-                if match:
-                    return match.group(1) if len(match.groups()) > 0 else match.group(0)
-
-        return "N/A"
 
     def process_law_page_2016(self, link_info, search_term):
         """Process individual law page from 2016"""
@@ -245,17 +218,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
 
         return info
 
-    def extract_snippet(self, text, terms, max_length=200):
-        """Extract relevant text snippet around found terms"""
-        for term in terms:
-            if term.lower() in text:
-                idx = text.find(term.lower())
-                start = max(0, idx - 100)
-                end = min(len(text), idx + 100)
-                snippet = text[start:end].strip()
-                return snippet[:max_length] if len(snippet) > max_length else snippet
-        return text[:max_length]
-
     def search_all_terms_2016(self):
         """Search all LGBT terms for 2016"""
         print("Starting LGBT rights law search for Peru Congress 2016...")
@@ -283,43 +245,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
         )
         return total_found
 
-    def save_results(self):
-        """Save results in multiple formats"""
-        if not self.results:
-            print("No LGBT-related laws found for 2016.")
-            return
-
-        # Save detailed JSON
-        with open("lgbt_laws_2016_results.json", "w", encoding="utf-8") as f:
-            json.dump(self.results, f, indent=2, ensure_ascii=False)
-
-        # Save as CSV
-        df = pd.DataFrame(self.results)
-        df.to_csv("lgbt_laws_2016.csv", index=False, encoding="utf-8")
-
-        # Create human-readable summary
-        with open("lgbt_laws_2016_summary.txt", "w", encoding="utf-8") as f:
-            f.write("LEYES SOBRE DERECHOS LGBT EN PERÚ - 2016\n")
-            f.write("=" * 50 + "\n")
-            f.write(
-                f"Búsqueda realizada: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-            )
-            f.write(f"Total de proyectos encontrados: {len(self.results)}\n\n")
-
-            for i, law in enumerate(self.results, 1):
-                f.write(f"{i}. {law['law_number']} - {law['title'][:80]}...\n")
-                f.write(f"   Fecha: {law['date']}\n")
-                f.write(f"   Estado: {law['status']}\n")
-                f.write(f"   Término de búsqueda: {law['search_term_used']}\n")
-                f.write(f"   Términos encontrados: {', '.join(law['found_terms'])}\n")
-                f.write(f"   URL: {law['url']}\n")
-                f.write(f"   Resumen: {law['summary'][:150]}...\n\n")
-
-        print(f"Results saved:")
-        print(f"  - lgbt_laws_2016_results.json (detailed)")
-        print(f"  - lgbt_laws_2016.csv (spreadsheet)")
-        print(f"  - lgbt_laws_2016_summary.txt (human readable)")
-
     def run(self):
         """Main execution method"""
         try:
@@ -331,5 +256,5 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
 
 
 if __name__ == "__main__":
-    scraper = PeruHistoricalLGBTScraper()
+    scraper = Peru2016LGBTScraper()
     scraper.run()
