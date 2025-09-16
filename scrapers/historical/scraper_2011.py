@@ -450,4 +450,3 @@ class Peru2011LGBTScraper:
 if __name__ == "__main__":
     scraper = Peru2011LGBTScraper()
     scraper.run()
-

@@ -3,112 +3,16 @@ import time
 from datetime import datetime
 from urllib.parse import urljoin, quote
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
-import json
-import pandas as pd
 import re
+from ..base import BaseLGBTScraper
 
 
-class PeruHistoricalLGBTScraper:
+class Peru2016LGBTScraper(BaseLGBTScraper):
     def __init__(self):
-        self.session = requests.Session()
-        self.ua = UserAgent()
-        self.setup_session()
+        super().__init__("2016-2021")
 
         # Historical search URLs (2016 as example)
         self.search_base_2016 = "https://www2.congreso.gob.pe/Sicr/TraDocEstProc/CLProLey2016.nsf/debusqueda2"
-
-        # LGBT-related search terms (starting with a few for testing)
-        self.search_terms = [
-            "no binarie",
-            "no binario",
-            "no binaria",
-            "no-binario",
-            "no-binaria",
-            "bisex",
-            "bisexual",
-            "bisexualidad",
-            "pareja del mismo sexo",
-            "parejas del mismo sexo",
-            "matrimonio igualitario",
-            "matrimonio entre personas del mismo sexo",
-            "gay",
-            "gays",
-            "comunidad gay",
-            "LGBT",
-            "LGTB",
-            "LGBTI",
-            "LGTBI",
-            "LGBTIQ",
-            "LGBTIQ+",
-            "heteronorma",
-            "heteronormativo",
-            "heteronormatividad",
-            "homoafectivo",
-            "vínculos homoafectivos",
-            "homofobia",
-            "homofóbico",
-            "homofóbica",
-            "homosexual",
-            "homosexualidad",
-            "identidad de género",
-            "reconocimiento de identidad de género",
-            "ley de identidad de género",
-            "intersex",
-            "intersexual",
-            "intersexualidad",
-            "lesbiana",
-            "lesbianas",
-            "lesbianidad",
-            "lésbico",
-            "mismo sexo",
-            "del mismo sexo",
-            "nombre social",
-            "uso de nombre social",
-            "orientación sexual",
-            "diversidad sexual",
-            "no discriminación por orientación sexual",
-            "psicosexual",
-            "psicosexualidad",
-            "queer",
-            "transexual",
-            "transexualidad",
-            "transfobia",
-            "transfóbico",
-            "transfóbica",
-            "transgénero",
-            "transgenero",
-            # "trans",
-            "reasignación de sexo",
-            "adecuación de sexo",
-            "cirugía de reasignación de sexo",
-            "travesti",
-            "travestis",
-            "unión homoafectiva",
-            "unión entre personas del mismo sexo",
-            "unión civil",
-            "unión civil no matrimonial",
-            "crímenes de odio",
-            "delitos de odio",
-            # "igualdad",
-            "no discriminación",
-            "cambio de nombre",
-            "rectificación de nombre",
-            "rectificación de sexo",
-        ]
-
-        self.results = []
-
-    def setup_session(self):
-        headers = {
-            "User-Agent": self.ua.random,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-        }
-        self.session.headers.update(headers)
 
     def search_historical_laws_2016(self, search_term, max_results=50):
         """Search for laws in 2016 using the historical interface"""

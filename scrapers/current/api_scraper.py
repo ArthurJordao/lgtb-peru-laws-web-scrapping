@@ -2,15 +2,12 @@ import requests
 import json
 import time
 from datetime import datetime
-from fake_useragent import UserAgent
-import pandas as pd
+from ..base import BaseLGBTScraper
 
 
-class PeruLGBTLawAPI:
+class PeruLGBTAPIScraper(BaseLGBTScraper):
     def __init__(self):
-        self.session = requests.Session()
-        self.ua = UserAgent()
-        self.setup_session()
+        super().__init__("api_current")
 
         # API endpoints discovered
         self.search_api = "https://wb2server.congreso.gob.pe/spley-portal-service/proyecto-ley/lista-con-filtro"
@@ -18,101 +15,20 @@ class PeruLGBTLawAPI:
             "https://wb2server.congreso.gob.pe/spley-portal-service/expediente"
         )
 
-        # LGBT-related search terms
-        self.search_terms = [
-            "no binarie",
-            "no binario",
-            "no binaria",
-            "no-binario",
-            "no-binaria",
-            "bisex",
-            "bisexual",
-            "bisexualidad",
-            "pareja del mismo sexo",
-            "parejas del mismo sexo",
-            "matrimonio igualitario",
-            "matrimonio entre personas del mismo sexo",
-            "gay",
-            "gays",
-            "comunidad gay",
-            "LGBT",
-            "LGTB",
-            "LGBTI",
-            "LGTBI",
-            "LGBTIQ",
-            "LGBTIQ+",
-            "heteronorma",
-            "heteronormativo",
-            "heteronormatividad",
-            "homoafectivo",
-            "vínculos homoafectivos",
-            "homofobia",
-            "homofóbico",
-            "homofóbica",
-            "homosexual",
-            "homosexualidad",
-            "identidad de género",
-            "reconocimiento de identidad de género",
-            "ley de identidad de género",
-            "intersex",
-            "intersexual",
-            "intersexualidad",
-            "lesbiana",
-            "lesbianas",
-            "lesbianidad",
-            "lésbico",
-            "mismo sexo",
-            "del mismo sexo",
-            "nombre social",
-            "uso de nombre social",
-            "orientación sexual",
-            "diversidad sexual",
-            "no discriminación por orientación sexual",
-            "psicosexual",
-            "psicosexualidad",
-            "queer",
-            "transexual",
-            "transexualidad",
-            "transfobia",
-            "transfóbico",
-            "transfóbica",
-            "transgénero",
-            "transgenero",
-            # "trans",
-            "reasignación de sexo",
-            "adecuación de sexo",
-            "cirugía de reasignación de sexo",
-            "travesti",
-            "travestis",
-            "unión homoafectiva",
-            "unión entre personas del mismo sexo",
-            "unión civil",
-            "unión civil no matrimonial",
-            "crímenes de odio",
-            "delitos de odio",
-            # "igualdad",
-            "no discriminación",
-            "cambio de nombre",
-            "rectificación de nombre",
-            "rectificación de sexo",
-        ]
-
-        self.results = []
-
     def setup_session(self):
-        headers = {
-            "User-Agent": self.ua.random,
+        """Override base setup for API-specific headers"""
+        super().setup_session()
+        # Update with API-specific headers
+        api_headers = {
             "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
             "Content-Type": "application/json",
             "Referer": "https://wb2server.congreso.gob.pe/spley-portal/",
             "Origin": "https://wb2server.congreso.gob.pe",
-            "Connection": "keep-alive",
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-origin",
         }
-        self.session.headers.update(headers)
+        self.session.headers.update(api_headers)
 
     def search_laws(self, search_term, max_results=50):
         """Search for laws using the discovered API endpoint"""
@@ -323,6 +239,5 @@ class PeruLGBTLawAPI:
 
 
 if __name__ == "__main__":
-    api = PeruLGBTLawAPI()
+    api = PeruLGBTAPIScraper()
     api.run()
-
