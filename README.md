@@ -4,7 +4,7 @@ A comprehensive scraper to find and analyze laws related to LGBT rights in Peru'
 
 ## Overview
 
-This project provides automated tools to search, extract, and analyze LGBT-related legislation from Peru's Congress database across multiple historical periods (2011-present). It includes specialized scrapers for different eras, from modern API-based extraction to legacy web systems.
+This project provides automated tools to search, extract, and analyze LGBT-related legislation from Peru's Congress database across multiple historical periods (1995-present). It includes specialized scrapers for different eras, from modern API-based extraction to legacy web systems.
 
 ## 🏗️ Project Structure
 
@@ -20,7 +20,11 @@ lgtb-peru-law/
 │   │   ├── __init__.py
 │   │   ├── scraper_2021.py     # 2021+ API-based scraper
 │   │   ├── scraper_2016.py     # 2016-2021 period
-│   │   └── scraper_2011.py     # 2011-2016 period
+│   │   ├── scraper_2011.py     # 2011-2016 period
+│   │   ├── scraper_2006.py     # 2006-2011 period
+│   │   ├── scraper_2001.py     # 2001-2006 period
+│   │   ├── scraper_2000.py     # 2000-2001 period
+│   │   └── scraper_1995.py     # 1995-2000 period
 │   └── utils/                  # Shared utilities
 │       ├── __init__.py
 │       ├── search_terms.py     # LGBT search terms database
@@ -31,7 +35,7 @@ lgtb-peru-law/
 
 ## ✨ Features
 
-- **Multi-Period Coverage**: Covers 10+ years of legislation (2011-present)
+- **Multi-Period Coverage**: Covers 25+ years of legislation (1995-present)
 - **API-Based Scraping**: Uses Peru Congress official API for current period
 - **Historical Web Scraping**: Custom scrapers for legacy systems
 - **Comprehensive Search**: 70+ LGBT-related terms in Spanish
@@ -62,6 +66,10 @@ uv run python main.py --current
 # Scrape specific historical period
 uv run python main.py --period 2016  # 2016-2021
 uv run python main.py --period 2011  # 2011-2016
+uv run python main.py --period 2006  # 2006-2011
+uv run python main.py --period 2001  # 2001-2006
+uv run python main.py --period 2000  # 2000-2001
+uv run python main.py --period 1995  # 1995-2000
 
 # Scrape all available periods
 uv run python main.py --all
@@ -79,6 +87,10 @@ You can also run individual scrapers directly:
 uv run python -m scrapers.periods.scraper_2021
 uv run python -m scrapers.periods.scraper_2016
 uv run python -m scrapers.periods.scraper_2011
+uv run python -m scrapers.periods.scraper_2006
+uv run python -m scrapers.periods.scraper_2001
+uv run python -m scrapers.periods.scraper_2000
+uv run python -m scrapers.periods.scraper_1995
 ```
 
 ## 📊 Data Coverage
@@ -88,6 +100,10 @@ uv run python -m scrapers.periods.scraper_2011
 | 2021+ | API | ✅ Active | Modern Congress API |
 | 2016-2021 | Web | ✅ Active | 2016-2021 Portal |
 | 2011-2016 | Web | ✅ Active | 2011-2016 Portal |
+| 2006-2011 | Web | ✅ Active | 2006-2011 Portal |
+| 2001-2006 | Web | ✅ Active | 2001-2006 Portal |
+| 2000-2001 | Web | ✅ Active | 2000-2001 Portal |
+| 1995-2000 | Web | ✅ Active | 1995-2000 Portal |
 
 ## 🔍 Search Terms
 
@@ -151,6 +167,10 @@ This tool supports comparative research on:
 
 - **2016-2021**: Web portal with structured search
 - **2011-2016**: Legacy web system with different field names
+- **2006-2011**: Legacy web portal with hidden form fields
+- **2001-2006**: Legacy web system with HTML parsing challenges
+- **2000-2001**: Legacy NSF database with Start/Count pagination
+- **1995-2000**: Oldest legacy system with malformed HTML patterns
 
 ### VPN Requirements
 
