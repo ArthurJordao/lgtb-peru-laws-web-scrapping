@@ -6,6 +6,7 @@ coverage of LGBT rights legislation in Peru.
 """
 
 LGBT_SEARCH_TERMS = [
+    "unión civil",
     "gay",
     "identidad de género",
     "mismo sexo",
@@ -72,7 +73,6 @@ LGBT_SEARCH_TERMS = [
     "travestis",
     "unión homoafectiva",
     "unión entre personas del mismo sexo",
-    "unión civil",
     "unión civil no matrimonial",
     "crímenes de odio",
     "delitos de odio",
