@@ -8,7 +8,8 @@ This script allows you to run scrapers for different periods:
 - 2011-2016: Uses 2011-2016 web portal
 - 2006-2011: Uses 2006-2011 web portal
 - 2001-2006: Uses 2001-2006 web portal
-- 1995-2001: Uses 1995-2001 web portal
+- 2000-2001: Uses 2000-2001 web portal
+- 1995-2000: Uses 1995-2000 web portal
 """
 
 import argparse
@@ -19,6 +20,7 @@ from scrapers import (
     Peru2006LGBTScraper,
     Peru2001LGBTScraper,
     Peru2000LGBTScraper,
+    Peru1995LGBTScraper,
 )
 
 
@@ -35,6 +37,7 @@ Examples:
   uv run python main.py --period 2006         # Scrape 2006-2011 period
   uv run python main.py --period 2001         # Scrape 2001-2006 period
   uv run python main.py --period 2000         # Scrape 2000-2001 period
+  uv run python main.py --period 1995         # Scrape 1995-2000 period
   uv run python main.py --all                 # Scrape all periods
         """,
     )
@@ -45,7 +48,7 @@ Examples:
 
     parser.add_argument(
         "--period",
-        choices=["2016", "2011", "2006", "2001", "2000"],
+        choices=["2016", "2011", "2006", "2001", "2000", "1995"],
         help="Scrape specific period",
     )
 
@@ -80,6 +83,9 @@ Examples:
 
     if args.period == "2000" or args.all:
         scrapers_to_run.append(("Historical 2000-2001", Peru2000LGBTScraper))
+
+    if args.period == "1995" or args.all:
+        scrapers_to_run.append(("Historical 1995-2000", Peru1995LGBTScraper))
 
     # Run selected scrapers
     print("🏳️‍🌈 Peru LGBT Laws Scraper")

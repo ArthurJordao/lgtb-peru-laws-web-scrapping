@@ -7,7 +7,8 @@ Each scraper covers a specific legislative period:
 - 2011-2016: Web scraper for 2011-2016 period
 - 2006-2011: Web scraper for 2006-2011 period
 - 2001-2006: Web scraper for 2001-2006 period
-- 1995-2001: Web scraper for 1995-2001 period
+- 2000-2001: Web scraper for 2000-2001 period
+- 1995-2000: Web scraper for 1995-2000 period
 """
 
 from .scraper_2021 import Peru2021LGBTScraper
@@ -16,6 +17,7 @@ from .scraper_2011 import Peru2011LGBTScraper
 from .scraper_2006 import Peru2006LGBTScraper
 from .scraper_2001 import Peru2001LGBTScraper
 from .scraper_2000 import Peru2000LGBTScraper
+from .scraper_1995 import Peru1995LGBTScraper
 
 __all__ = [
     "Peru2021LGBTScraper",
@@ -24,4 +26,5 @@ __all__ = [
     "Peru2006LGBTScraper",
     "Peru2001LGBTScraper",
     "Peru2000LGBTScraper",
+    "Peru1995LGBTScraper",
 ]

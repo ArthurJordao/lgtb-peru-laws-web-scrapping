@@ -25,7 +25,6 @@ LGBT_SEARCH_TERMS = [
     "gays",
     "comunidad gay",
     "LGBT",
-    "LGTB",
     "LGBTI",
     "LGTBI",
     "LGBTIQ",
