@@ -187,6 +187,21 @@ class Peru2021LGBTScraper(BaseLGBTScraper):
                 ]
                 if detailed
                 else [],
+                "period": detailed.get("general", {}).get(
+                    "desPerParAbrev", "Sin período"
+                )
+                if detailed
+                else "Sin período",
+                "legislature": detailed.get("general", {}).get(
+                    "desLegis", "Sin legislatura"
+                )
+                if detailed
+                else "Sin legislatura",
+                "content_snippet": (
+                    detailed.get("general", {}).get("sumilla", "")[:200] + "..."
+                )
+                if detailed and detailed.get("general", {}).get("sumilla")
+                else basic.get("titulo", "Sin contenido")[:200] + "...",
                 "year": "2021",
                 "scraped_at": datetime.now().isoformat(),
             }

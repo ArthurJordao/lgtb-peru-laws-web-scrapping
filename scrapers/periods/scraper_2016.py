@@ -109,6 +109,11 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                     "date": law_info.get("date", "N/A"),
                     "status": law_info.get("status", "N/A"),
                     "summary": law_info.get("summary", ""),
+                    "authors": law_info.get("authors", ""),
+                    "proponent": law_info.get("proponent", ""),
+                    "committees": law_info.get("committees", []),
+                    "period": law_info.get("period", ""),
+                    "legislature": law_info.get("legislature", ""),
                     "content_snippet": self.extract_snippet(
                         page_text, found_terms + [search_term]
                     ),
@@ -191,10 +196,29 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 info["status"] = match.group(0)
                 break
 
-        # Extract authors/proponents - look for "Proponente:" section
-        author_match = re.search(r"Proponente[s]?:\s*([^.\n]+)", text, re.IGNORECASE)
+        # Extract authors - in 2016, authors are listed after "Grupo Parlamentario:" line
+        author_match = re.search(
+            r"Grupo Parlamentario:[^\n]*\n([^\n]+(?:,[^\n]+)*)", text, re.IGNORECASE
+        )
         if author_match:
             info["authors"] = author_match.group(1).strip()
+
+        # Extract proponent - 2016 has "Proponente:" field
+        proponent_match = re.search(r"Proponente:\s*([^\n]+)", text, re.IGNORECASE)
+        if proponent_match:
+            info["proponent"] = proponent_match.group(1).strip()
+
+        # Extract period - 2016 has "Período Parlamentario:" field
+        period_match = re.search(
+            r"Período\s*Parlamentario:\s*([^\n]+)", text, re.IGNORECASE
+        )
+        if period_match:
+            info["period"] = period_match.group(1).strip()
+
+        # Extract legislature - 2016 has "Legislatura:" field
+        legislature_match = re.search(r"Legislatura:\s*([^\n]+)", text, re.IGNORECASE)
+        if legislature_match:
+            info["legislature"] = legislature_match.group(1).strip()
 
         # Extract committees
         committee_patterns = [
