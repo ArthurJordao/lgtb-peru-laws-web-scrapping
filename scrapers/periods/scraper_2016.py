@@ -73,7 +73,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 processed += 1
             time.sleep(0.8)  # Be respectful with older servers
 
-
         return processed
 
     def process_law_page_2016(self, link_info, search_term):
@@ -236,29 +235,40 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
             obj_pos = text.find("Objeto del Proyecto de Ley:")
             if obj_pos != -1:
                 # Get text starting from this position
-                remaining_text = text[obj_pos + len("Objeto del Proyecto de Ley:"):]
-                
+                remaining_text = text[obj_pos + len("Objeto del Proyecto de Ley:") :]
+
                 # Extract the first meaningful sentence/paragraph
-                lines = remaining_text.split('\n')
+                lines = remaining_text.split("\n")
                 summary_lines = []
-                
+
                 for line in lines:
                     line = line.strip()
-                    if line and len(line) > 10 and not line.startswith(('http', 'www')):
+                    if line and len(line) > 10 and not line.startswith(("http", "www")):
                         # Skip navigation/header lines
-                        if any(word in line.lower() for word in ['menu', 'navigation', 'congreso', 'inicio', 'buscar']):
+                        if any(
+                            word in line.lower()
+                            for word in [
+                                "menu",
+                                "navigation",
+                                "congreso",
+                                "inicio",
+                                "buscar",
+                            ]
+                        ):
                             continue
                         summary_lines.append(line)
                         # Stop after getting enough content (around 300 chars)
-                        if len(' '.join(summary_lines)) > 200:
+                        if len(" ".join(summary_lines)) > 200:
                             break
-                
+
                 if summary_lines:
-                    summary = ' '.join(summary_lines).strip()
+                    summary = " ".join(summary_lines).strip()
                     # Clean up extra whitespace
-                    summary = re.sub(r'\s+', ' ', summary)
+                    summary = re.sub(r"\s+", " ", summary)
                     if len(summary) > 20:
-                        info["summary"] = summary[:300] + "..." if len(summary) > 300 else summary
+                        info["summary"] = (
+                            summary[:300] + "..." if len(summary) > 300 else summary
+                        )
 
         return info
 
@@ -275,7 +285,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 found = self.search_historical_laws_2016(term)
                 total_found += found
                 time.sleep(2)  # Be respectful between searches
-
 
             except KeyboardInterrupt:
                 print("\nSearch interrupted by user")

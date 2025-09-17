@@ -59,7 +59,6 @@ Examples:
     if args.period == "2011" or args.all:
         scrapers_to_run.append(("Historical 2011-2016", Peru2011LGBTScraper))
 
-
     # Run selected scrapers
     print("🏳️‍🌈 Peru LGBT Laws Scraper")
     print(f"Running {len(scrapers_to_run)} scraper(s)...")

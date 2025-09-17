@@ -73,7 +73,6 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                 processed += 1
             time.sleep(1.0)  # Be respectful with older servers
 
-
         return processed
 
     def extract_project_number(self, text, link_element):
@@ -251,30 +250,34 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
 
         # Extract committees from hidden fields or text
         committees = []
-        
+
         # First try hidden field pattern
         committee_match = re.search(r'DesComi[^>]*value="([^"]+)"', text)
         if committee_match:
             committee_text = committee_match.group(1)
             if committee_text and committee_text.strip():
                 committees = [c.strip() for c in committee_text.split(",") if c.strip()]
-        
+
         # If not found, try extracting from "Seguimiento" section
         if not committees:
-            seguimiento_match = re.search(r"Seguimiento:\s*.*?Decretado a\.\.\.\s*([^\n<]+)", text, re.IGNORECASE | re.DOTALL)
+            seguimiento_match = re.search(
+                r"Seguimiento:\s*.*?Decretado a\.\.\.\s*([^\n<]+)",
+                text,
+                re.IGNORECASE | re.DOTALL,
+            )
             if seguimiento_match:
                 committee_text = seguimiento_match.group(1).strip()
                 if committee_text:
                     committees = [committee_text]
-        
+
         # Alternative pattern for committee assignments in text
         if not committees:
             committee_patterns = [
                 r"En comisión\s+([^\n<]+)",
                 r"comisión\s+de\s+([^\n<]+)",
-                r"Decretado a\.\.\.\s*([^\n<]+)"
+                r"Decretado a\.\.\.\s*([^\n<]+)",
             ]
-            
+
             for pattern in committee_patterns:
                 match = re.search(pattern, text, re.IGNORECASE)
                 if match:
@@ -282,7 +285,7 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                     if committee_text:
                         committees = [committee_text]
                         break
-        
+
         if committees:
             info["committees"] = committees
 
@@ -312,7 +315,6 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                 found = self.search_laws_2011(term)
                 total_found += found
                 time.sleep(2)  # Be respectful between searches
-
 
                 # Progress indicator
                 if (i + 1) % 5 == 0:

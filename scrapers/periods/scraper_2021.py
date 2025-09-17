@@ -143,7 +143,6 @@ class Peru2021LGBTScraper(BaseLGBTScraper):
                 total_found += found
                 time.sleep(1)  # Be respectful between searches
 
-
             except KeyboardInterrupt:
                 print("\nSearch interrupted by user")
                 break
