@@ -1,3 +1,4 @@
+from os import link
 import requests
 import time
 from datetime import datetime
@@ -75,7 +76,7 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
 
         return processed
 
-    def extract_project_number(self, text, link_element):
+    def extract_project_number(self, text, link_element=None):
         """Extract project number from link text or surrounding context"""
         # Look for patterns like "05405/2015-PE" or "03336/2011-CR"
         project_patterns = [
@@ -92,7 +93,7 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                 return match.group(1) if len(match.groups()) > 0 else match.group(0)
 
         # If not found in text, look at parent elements
-        if link_element.parent:
+        if link_element and link_element.parent:
             parent_text = link_element.parent.get_text()
             for pattern in project_patterns:
                 match = re.search(pattern, parent_text, re.IGNORECASE)
@@ -112,45 +113,45 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
             soup = BeautifulSoup(response.content, "html.parser")
             page_text = soup.get_text().lower()
 
-            # Check if any of our search terms appear in the page
+            # Check if any of our search terms appear in the page (for metadata)
             found_terms = []
             for term in self.search_terms:
                 if term.lower() in page_text:
                     found_terms.append(term)
 
-            if found_terms or search_term.lower() in page_text:
-                # Extract law information
-                law_info = self.extract_law_info_2011(soup, link_info["url"])
+            # Process the law - search already filtered relevant results
+            # Extract law information
+            law_info = self.extract_law_info_2011(soup, link_info["url"])
 
-                result = {
-                    "search_term_used": search_term,
-                    "found_terms": found_terms,
-                    "url": link_info["url"],
-                    "title": law_info.get("title", link_info["title"]),
-                    "law_number": law_info.get(
-                        "law_number", link_info.get("project_number", "N/A")
-                    ),
-                    "date": law_info.get("date", "N/A"),
-                    "status": law_info.get("status", "N/A"),
-                    "summary": law_info.get("summary", ""),
-                    "authors": law_info.get("authors", ""),
-                    "proponent": law_info.get("proponent", ""),
-                    "committees": law_info.get("committees", []),
-                    "period": law_info.get("period", ""),
-                    "legislature": law_info.get("legislature", ""),
-                    "content_snippet": self.extract_snippet(
-                        page_text, found_terms + [search_term]
-                    ),
-                    "year": "2011-2016",
-                    "scraped_at": datetime.now().isoformat(),
-                }
+            result = {
+                "search_term_used": search_term,
+                "found_terms": found_terms,
+                "url": link_info["url"],
+                "title": law_info.get("title", link_info["title"]),
+                "law_number": law_info.get(
+                    "law_number", link_info.get("project_number", "N/A")
+                ),
+                "date": law_info.get("date", "N/A"),
+                "status": law_info.get("status", "N/A"),
+                "summary": law_info.get("summary", ""),
+                "authors": law_info.get("authors", ""),
+                "proponent": law_info.get("proponent", ""),
+                "committees": law_info.get("committees", []),
+                "period": law_info.get("period", ""),
+                "legislature": law_info.get("legislature", ""),
+                "content_snippet": self.extract_snippet(
+                    page_text, found_terms + [search_term]
+                ),
+                "year": "2011-2016",
+                "scraped_at": datetime.now().isoformat(),
+            }
 
-                self.results.append(result)
+            self.results.append(result)
 
-                print(
-                    f"    ✓ {law_info.get('law_number', 'N/A')}: {law_info.get('title', link_info['title'])[:60]}..."
-                )
-                return True
+            print(
+                f"    ✓ {law_info.get('law_number', 'N/A')}: {law_info.get('title', link_info['title'])[:60]}..."
+            )
+            return True
 
         except Exception as e:
             print(f"    Error processing {link_info['url']}: {e}")
