@@ -12,10 +12,12 @@ from .periods.scraper_2021 import Peru2021LGBTScraper
 from .periods.scraper_2016 import Peru2016LGBTScraper
 from .periods.scraper_2011 import Peru2011LGBTScraper
 from .periods.scraper_2006 import Peru2006LGBTScraper
+from .periods.scraper_2001 import Peru2001LGBTScraper
 
 __all__ = [
     "Peru2021LGBTScraper",
     "Peru2016LGBTScraper",
     "Peru2011LGBTScraper",
     "Peru2006LGBTScraper",
+    "Peru2001LGBTScraper",
 ]
