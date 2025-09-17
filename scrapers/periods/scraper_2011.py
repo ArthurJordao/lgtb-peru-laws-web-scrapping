@@ -68,14 +68,11 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
 
         # Process each law link
         processed = 0
-        for link_info in law_links[:10]:  # Limit for testing
+        for link_info in law_links:
             if self.process_law_page_2011(link_info, search_term):
                 processed += 1
             time.sleep(1.0)  # Be respectful with older servers
 
-            if len(self.results) >= 25:  # Overall limit
-                print("  Reached result limit, stopping...")
-                break
 
         return processed
 
@@ -253,10 +250,41 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                 break
 
         # Extract committees from hidden fields or text
+        committees = []
+        
+        # First try hidden field pattern
         committee_match = re.search(r'DesComi[^>]*value="([^"]+)"', text)
         if committee_match:
-            committees = committee_match.group(1).split(",")
-            info["committees"] = [c.strip() for c in committees if c.strip()]
+            committee_text = committee_match.group(1)
+            if committee_text and committee_text.strip():
+                committees = [c.strip() for c in committee_text.split(",") if c.strip()]
+        
+        # If not found, try extracting from "Seguimiento" section
+        if not committees:
+            seguimiento_match = re.search(r"Seguimiento:\s*.*?Decretado a\.\.\.\s*([^\n<]+)", text, re.IGNORECASE | re.DOTALL)
+            if seguimiento_match:
+                committee_text = seguimiento_match.group(1).strip()
+                if committee_text:
+                    committees = [committee_text]
+        
+        # Alternative pattern for committee assignments in text
+        if not committees:
+            committee_patterns = [
+                r"En comisión\s+([^\n<]+)",
+                r"comisión\s+de\s+([^\n<]+)",
+                r"Decretado a\.\.\.\s*([^\n<]+)"
+            ]
+            
+            for pattern in committee_patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    committee_text = match.group(1).strip()
+                    if committee_text:
+                        committees = [committee_text]
+                        break
+        
+        if committees:
+            info["committees"] = committees
 
         return info
 
@@ -285,9 +313,6 @@ class Peru2011LGBTScraper(BaseLGBTScraper):
                 total_found += found
                 time.sleep(2)  # Be respectful between searches
 
-                if len(self.results) >= 25:  # Reasonable limit for testing
-                    print("Reached limit of 25 results, stopping search...")
-                    break
 
                 # Progress indicator
                 if (i + 1) % 5 == 0:

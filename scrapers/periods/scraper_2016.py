@@ -68,14 +68,11 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
 
         # Process each law link
         processed = 0
-        for link_info in law_links[:10]:  # Limit for testing
+        for link_info in law_links:
             if self.process_law_page_2016(link_info, search_term):
                 processed += 1
             time.sleep(0.8)  # Be respectful with older servers
 
-            if len(self.results) >= 20:  # Overall limit
-                print("  Reached result limit, stopping...")
-                break
 
         return processed
 
@@ -232,13 +229,36 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 info["committees"] = matches
                 break
 
-        # Extract object/summary - look for "OBJETO:" section
-        object_match = re.search(
-            r"OBJETO:\s*([^.]+\.)", text, re.IGNORECASE | re.DOTALL
-        )
-        if object_match:
-            summary = object_match.group(1).strip()
-            info["summary"] = summary[:300] + "..." if len(summary) > 300 else summary
+        # Extract summary - use a simple text extraction approach
+        # Look for the "Objeto del Proyecto de Ley:" section in the text
+        if "Objeto del Proyecto de Ley:" in text:
+            # Find the position and extract text after it
+            obj_pos = text.find("Objeto del Proyecto de Ley:")
+            if obj_pos != -1:
+                # Get text starting from this position
+                remaining_text = text[obj_pos + len("Objeto del Proyecto de Ley:"):]
+                
+                # Extract the first meaningful sentence/paragraph
+                lines = remaining_text.split('\n')
+                summary_lines = []
+                
+                for line in lines:
+                    line = line.strip()
+                    if line and len(line) > 10 and not line.startswith(('http', 'www')):
+                        # Skip navigation/header lines
+                        if any(word in line.lower() for word in ['menu', 'navigation', 'congreso', 'inicio', 'buscar']):
+                            continue
+                        summary_lines.append(line)
+                        # Stop after getting enough content (around 300 chars)
+                        if len(' '.join(summary_lines)) > 200:
+                            break
+                
+                if summary_lines:
+                    summary = ' '.join(summary_lines).strip()
+                    # Clean up extra whitespace
+                    summary = re.sub(r'\s+', ' ', summary)
+                    if len(summary) > 20:
+                        info["summary"] = summary[:300] + "..." if len(summary) > 300 else summary
 
         return info
 
@@ -256,9 +276,6 @@ class Peru2016LGBTScraper(BaseLGBTScraper):
                 total_found += found
                 time.sleep(2)  # Be respectful between searches
 
-                if len(self.results) >= 20:  # Reasonable limit for testing
-                    print("Reached limit of 20 results, stopping search...")
-                    break
 
             except KeyboardInterrupt:
                 print("\nSearch interrupted by user")

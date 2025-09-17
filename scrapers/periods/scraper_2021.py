@@ -143,9 +143,6 @@ class Peru2021LGBTScraper(BaseLGBTScraper):
                 total_found += found
                 time.sleep(1)  # Be respectful between searches
 
-                if len(self.results) >= 50:  # Reasonable limit
-                    print("Reached limit of 50 results, stopping search...")
-                    break
 
             except KeyboardInterrupt:
                 print("\nSearch interrupted by user")
