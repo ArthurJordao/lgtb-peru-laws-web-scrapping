@@ -6,7 +6,6 @@ This script allows you to run scrapers for different periods:
 - Current (2021+): Uses modern API endpoints
 - 2016-2021: Uses 2016-2021 web portal
 - 2011-2016: Uses 2011-2016 web portal
-- 2006-2011: Uses 2006-2011 web portal (experimental)
 """
 
 import argparse
@@ -20,10 +19,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python main.py --current              # Scrape 2021+ period
-  python main.py --period 2016         # Scrape 2016-2021 period
-  python main.py --period 2011         # Scrape 2011-2016 period  
-  python main.py --all                 # Scrape all periods
+  uv run python main.py --current              # Scrape 2021+ period
+  uv run python main.py --period 2016         # Scrape 2016-2021 period
+  uv run python main.py --period 2011         # Scrape 2011-2016 period  
+  uv run python main.py --all                 # Scrape all periods
         """,
     )
 
@@ -33,7 +32,7 @@ Examples:
 
     parser.add_argument(
         "--period",
-        choices=["2016", "2011", "2006"],
+        choices=["2016", "2011"],
         help="Scrape specific period",
     )
 
@@ -60,11 +59,6 @@ Examples:
     if args.period == "2011" or args.all:
         scrapers_to_run.append(("Historical 2011-2016", Peru2011LGBTScraper))
 
-    if args.period == "2006":
-        print("⚠️  2006-2011 scraper is experimental and may have limited functionality")
-        # TODO: Add Peru2006LGBTScraper when ready
-        print("2006-2011 scraper not yet available in modular structure")
-        return
 
     # Run selected scrapers
     print("🏳️‍🌈 Peru LGBT Laws Scraper")

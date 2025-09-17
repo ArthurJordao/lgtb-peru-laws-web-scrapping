@@ -4,7 +4,7 @@ A comprehensive scraper to find and analyze laws related to LGBT rights in Peru'
 
 ## Overview
 
-This project provides automated tools to search, extract, and analyze LGBT-related legislation from Peru's Congress database across multiple historical periods (2006-present). It includes specialized scrapers for different eras, from modern API-based extraction to legacy Lotus Notes systems.
+This project provides automated tools to search, extract, and analyze LGBT-related legislation from Peru's Congress database across multiple historical periods (2011-present). It includes specialized scrapers for different eras, from modern API-based extraction to legacy web systems.
 
 ## 🏗️ Project Structure
 
@@ -16,27 +16,22 @@ lgtb-peru-law/
 ├── scrapers/                   # Core scraper modules
 │   ├── __init__.py
 │   ├── base.py                 # Base scraper with shared functionality
-│   ├── current/                # Current period (2021+)
+│   ├── periods/                # Period-specific scrapers
 │   │   ├── __init__.py
-│   │   └── api_scraper.py      # API-based scraper
-│   ├── historical/             # Historical periods
-│   │   ├── __init__.py
+│   │   ├── scraper_2021.py     # 2021+ API-based scraper
 │   │   ├── scraper_2016.py     # 2016-2021 period
-│   │   ├── scraper_2011.py     # 2011-2016 period
-│   │   └── scraper_2006.py     # 2006-2011 period (experimental)
+│   │   └── scraper_2011.py     # 2011-2016 period
 │   └── utils/                  # Shared utilities
 │       ├── __init__.py
 │       ├── search_terms.py     # LGBT search terms database
 │       └── export.py           # Data export utilities
 └── data/                       # Data storage
-    ├── raw/                    # Raw scraped data
-    ├── processed/              # Processed/cleaned data
-    └── exports/                # Final export files (CSV, JSON, TXT)
+    └── exports/                # Export files (CSV, JSON, TXT)
 ```
 
 ## ✨ Features
 
-- **Multi-Period Coverage**: Covers 15+ years of legislation (2006-present)
+- **Multi-Period Coverage**: Covers 10+ years of legislation (2011-present)
 - **API-Based Scraping**: Uses Peru Congress official API for current period
 - **Historical Web Scraping**: Custom scrapers for legacy systems
 - **Comprehensive Search**: 70+ LGBT-related terms in Spanish
@@ -62,17 +57,17 @@ uv sync
 
 ```bash
 # Scrape current period (2021+) using API
-python main.py --current
+uv run python main.py --current
 
 # Scrape specific historical period
-python main.py --historical 2016  # 2016-2021
-python main.py --historical 2011  # 2011-2016
+uv run python main.py --period 2016  # 2016-2021
+uv run python main.py --period 2011  # 2011-2016
 
 # Scrape all available periods
-python main.py --all
+uv run python main.py --all
 
 # Run in test mode (limited results)
-python main.py --current --test
+uv run python main.py --current --test
 ```
 
 ### Individual Scrapers
@@ -80,12 +75,10 @@ python main.py --current --test
 You can also run individual scrapers directly:
 
 ```bash
-# Current API scraper
-uv run python scrapers/current/api_scraper.py
-
-# Historical scrapers
-uv run python scrapers/historical/scraper_2016.py
-uv run python scrapers/historical/scraper_2011.py
+# Individual scrapers
+uv run python -m scrapers.periods.scraper_2021
+uv run python -m scrapers.periods.scraper_2016
+uv run python -m scrapers.periods.scraper_2011
 ```
 
 ## 📊 Data Coverage
@@ -95,7 +88,6 @@ uv run python scrapers/historical/scraper_2011.py
 | 2021+ | API | ✅ Active | Modern Congress API |
 | 2016-2021 | Web | ✅ Active | 2016-2021 Portal |
 | 2011-2016 | Web | ✅ Active | 2011-2016 Portal |
-| 2006-2011 | Web | ⚠️ Experimental | Lotus Notes System |
 
 ## 🔍 Search Terms
 
@@ -159,7 +151,6 @@ This tool supports comparative research on:
 
 - **2016-2021**: Web portal with structured search
 - **2011-2016**: Legacy web system with different field names
-- **2006-2011**: Lotus Notes/Domino database (experimental)
 
 ### VPN Requirements
 
@@ -167,14 +158,14 @@ Some periods may require VPN access due to geographic restrictions:
 
 ```bash
 # Enable VPN before running scrapers if you encounter 403 errors
-python main.py --current  # May need VPN for API access
+uv run python main.py --current  # May need VPN for API access
 ```
 
 ## 📈 Development
 
 ### Adding New Periods
 
-1. Create new scraper in `scrapers/historical/`
+1. Create new scraper in `scrapers/periods/`
 2. Inherit from `BaseLGBTScraper`
 3. Implement period-specific parsing
 4. Add to main CLI interface
@@ -198,7 +189,6 @@ When using this data for research:
 
 ## ⚠️ Notes
 
-- The 2006-2011 scraper is experimental and may have limited functionality
 - VPN may be required for some endpoints
 - Rate limiting is implemented to be respectful to Congress servers
 - Some historical data may have inconsistent formatting
