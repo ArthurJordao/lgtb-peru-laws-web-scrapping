@@ -117,37 +117,8 @@ The scraper searches for 70+ LGBT-related terms including:
 
 **Legal Processes**: `cambio de nombre`, `rectificación de sexo`, `reasignación de sexo`
 
-**Entire list**: https://github.com/ArthurJordao/lgtb-peru-laws-web-scrapping/blob/main/scrapers/utils/search_terms.py#L8-L83
-
-
-"no binarie","no binario","no binaria","no-binario","no-binaria",
-  "bisex","bisexual","bisexualidad",
-  "pareja del mismo sexo","parejas del mismo sexo",
-  "matrimonio igualitario","matrimonio entre personas del mismo sexo",
-  "gay","gays","comunidad gay",
-  "LGBT","LGTB","LGBTI","LGTBI","LGBTIQ","LGBTIQ+",
-  "heteronorma","heteronormativo","heteronormatividad",
-  "homoafectivo","vínculos homoafectivos",
-  "homofobia","homofóbico","homofóbica",
-  "homosexual","homosexualidad",
-  "identidad de género","reconocimiento de identidad de género","ley de identidad de género",
-  "intersex","intersexual","intersexualidad",
-  "lesbiana","lesbianas","lesbianidad","lésbico",
-  "mismo sexo","del mismo sexo",
-  "nombre social","uso de nombre social",
-  "orientación sexual","diversidad sexual","no discriminación por orientación sexual",
-  "psicosexual","psicosexualidad",
-  "queer",
-  "transexual","transexualidad",
-  "transfobia","transfóbico","transfóbica",
-  "transgénero","transgenero","trans",
-  "reasignación de sexo","adecuación de sexo","cirugía de reasignación de sexo",
-  "travesti","travestis",
-  "unión homoafectiva","unión entre personas del mismo sexo",
-  "unión civil","unión civil no matrimonial",
-  "crímenes de odio","delitos de odio",
-  "igualdad","no discriminación",
-  "cambio de nombre","rectificación de nombre","rectificación de sexo"
+> [!IMPORTANT]  
+> [List of all the words used can be founded in this link](https://github.com/ArthurJordao/lgtb-peru-laws-web-scrapping/blob/main/scrapers/utils/search_terms.py#L8-L83)
 
 ## 📁 Output Files
 
