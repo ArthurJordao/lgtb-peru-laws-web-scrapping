@@ -117,7 +117,10 @@ The scraper searches for 70+ LGBT-related terms including:
 
 **Legal Processes**: `cambio de nombre`, `rectificación de sexo`, `reasignación de sexo`
 
-Entire list: "no binarie","no binario","no binaria","no-binario","no-binaria",
+Entire list: bota esse link no readme: https://github.com/ArthurJordao/lgtb-peru-laws-web-scrapping/blob/main/scrapers/utils/search_terms.py#L8-L83
+
+
+"no binarie","no binario","no binaria","no-binario","no-binaria",
   "bisex","bisexual","bisexualidad",
   "pareja del mismo sexo","parejas del mismo sexo",
   "matrimonio igualitario","matrimonio entre personas del mismo sexo",
