@@ -117,7 +117,7 @@ The scraper searches for 70+ LGBT-related terms including:
 
 **Legal Processes**: `cambio de nombre`, `rectificación de sexo`, `reasignación de sexo`
 
-> [!IMPORTANT]  
+> [!NOTE]  
 > [List of all the words used can be founded in this link](https://github.com/ArthurJordao/lgtb-peru-laws-web-scrapping/blob/main/scrapers/utils/search_terms.py#L8-L83)
 
 ## 📁 Output Files
